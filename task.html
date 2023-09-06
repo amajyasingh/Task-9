@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: blanchedalmond;
+
+            margin: 0;
+        }
+
+        canvas {
+            border: 1px solid #000;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="drawing-canvas" width="500" height="500"></canvas>
+    <button id="zoom-in">Zoom In</button>
+    <button id="zoom-out">Zoom Out</button>
+    <script>
+        const canvas = document.getElementById('drawing-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Initial zoom level
+        let zoomLevel = 1;
+
+        // Function to draw a cell with content
+      // Function to draw a cell with content
+function drawCell(x, y, content) {
+    ctx.clearRect(x, y, 100, 100); // Clear the cell
+    ctx.strokeRect(x, y, 100, 100); // Draw the cell border
+
+    // Draw symbols in the corners
+    ctx.font = '14px Arial';
+    ctx.fillText('RE', x + 5, y + 14);
+    ctx.fillText('$', x + 80, y + 14);
+    ctx.fillText('*', x + 5, y + 95);
+    ctx.fillText('1', x + 48, y + 48);
+
+    // Draw the content in the center
+    ctx.font = '14px Arial';
+    ctx.fillText(content, x + 48, y + 75);
+}
+
+        // Function to zoom in
+        function zoomIn() {
+            zoomLevel += 0.1;
+            applyZoom();
+        }
+
+        // Function to zoom out
+        function zoomOut() {
+            if (zoomLevel > 0.1) {
+                zoomLevel -= 0.1;
+                applyZoom();
+            }
+        }
+
+        // Function to apply the current zoom level
+        function applyZoom() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.scale(zoomLevel, zoomLevel);
+
+            // Draw the cells with content
+            for (let row = 0; row < 6; row++) {
+                for (let col = 0; col < 6; col++) {
+                    let content;
+                    if (col === 0) {
+                        content = '▲'; // Triangle symbol
+                    } else if (col === 5) {
+                        content = '●'; // Circle symbol
+                    } else {
+                        content = col % 2 === 1 ? '®' : '°';
+                    }
+                    drawCell(col * 100, row * 100, content);
+                }
+            }
+
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformation matrix
+        }
+
+        // Attach click event handlers to zoom buttons
+        document.getElementById('zoom-in').addEventListener('click', zoomIn);
+        document.getElementById('zoom-out').addEventListener('click', zoomOut);
+
+        // Initial drawing
+        applyZoom();
+    </script>
+</body>
+</html>
